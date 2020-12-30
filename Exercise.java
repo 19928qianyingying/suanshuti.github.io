@@ -1,97 +1,71 @@
-package v1_1;
+package v4_1;
 
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.Random;
-import java.util.function.BinaryOperator;
+import java.util.Scanner;
 
+import v4_1.AdditionOperation;
+import v4_1.Operation;
+import v4_1.SubstractOperation;
+public class Exercise{
 
-public class Exercise {
-
-	public static final int NUMBER = 50; //要生成的算式数量
+	public static final int NUMBER = 20; //要生成的算式数量	
+	protected String[] exercise = new String[NUMBER]; //存放生成算式的字符串数组
+	protected int[] result = new int[NUMBER]; //存放生成算式结果的字符串数组
+	protected int[] value = new int[NUMBER];
 	
-	private String[] exercise = new String[NUMBER]; //存放生成算式的字符串数组
-	private String[] result = new String[NUMBER]; //存放生成算式结果的字符串数组
+	String fileExercise = "f:\\exercise.csv"; //习题文件
+	String fileValue = "f:\\value.csv";  //练习文件
+	String fileResult = "f:\\result.csv"; //结果文件
+	ArrayList<String[]> lstFile = new ArrayList<String[]>();
 	
-	public BinaryOperation setExercise() //生成随机题集
-	{
-		int get_operator;
-		Random random = new Random();
-		get_operator = (int)random.nextInt(2); //随机生成算数符号
-		if(get_operator == 1)	//当随机生成的数字为1时，定义为加法运算
-		{ 
-			return new AdditionOperation(); //返回生成的加法算式
-		}
-		else   //否则定义为减法运算
-		{
-			return new SubstractOperation();  //返回生成的减法算式
-		}
-
-	}
-
-	public void setBothExercise()  //加减法混合运算
-	{
-		BinaryOperation exe;  //定义一个抽象算式对象
-		for(int i = 0;i < NUMBER;i++)  //生成NUMBER个算式
-		{
-			exe = setExercise();    //调用算式生成方法随机生成加减法算式
-			exercise[i] ="" + exe.toString(); //将算式储存在习题数组中
-			result[i] = "" + exe.allString(); //将结果储存在结果数组中，下同
-		}
-	}
-	
-	public void getAdditionExercise()   //生成加法算式题集
-	{
-		AdditionOperation add = new AdditionOperation();
-		for(int i = 0;i < NUMBER;i++)
-		{
-			add.randomOperator('+');
-			exercise[i] ="" + add.toString();
-			result[i] = "" + add.allString();
-		}
-	}
-	public void getSubstractExercise()  //生成减法算式题集
-	{
-		SubstractOperation sub = new SubstractOperation();
-		for(int i = 0;i < NUMBER;i++)
-		{
-			sub.randomOperator('-');
-			exercise[i] ="" + sub.toString();
-			result[i] = "" + sub.allString();
-		}
-	}
-
 	public void displayExercise(int colums)  //输出算式题集，colms为每行显示的算式数目
 	{
-		System.out.println("共计" + NUMBER + "道算术题：");
-		System.out.println("—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————");
-		for(int i = 0;i < NUMBER;i++)
-		{
-			System.out.print((i + 1) + ":\t" + exercise[i] + "\t\t");
-			if((i + 1) % colums == 0)
-			{
-				System.out.println();
-			}
-		}
+		    System.out.println("共计" + NUMBER + "道算术题，请作答：");
+		    System.out.println("—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————");
+		    for(int i = 0;i < NUMBER;i++)
+	    	{
+	    		System.out.print((i + 1) + ":\t" + exercise[i] + "\t\t");
+	    		Scanner aValue = new Scanner(System.in);
+	    		int number = aValue.nextInt();
+	    		value[i] = number;
+	    	}
 	}
+	
 	public void displayResult(int colums)  //输出题集的结果
 	{
+		double number = 0; //做对题的个数
+		double rate; //正确率
 		System.out.println();
 		System.out.println("—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————");
 		System.out.println("正确答案：");
-		for(int i = 0;i < NUMBER;i++)
+		for(int i = 0;i < NUMBER;i++)  //输出正确答案
 		{
-			System.out.print((i + 1) + ":" + result[i] + "\t\t");
+			System.out.print((i + 1) + ":"+ exercise[i] + result[i] + "\t\t");
 			if((i + 1) % colums == 0)
 			{
 				System.out.println();
 			}
 		}
+		System.out.println("—————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————————");
+		for(int j = 0;j < result.length;j++) //对比value数组和正确答案result数组
+		{
+			if(value[j] == result[j])
+			{
+				number++;
+			}
+			else
+			{
+				System.out.println("第" + (j+1) + "题答案错误！正确答案为：" + result[j]);
+			}
+		} 
+		rate = number / value.length * 100;  //计算正确率
+		System.out.println("总共题目数为：" + result.length + "；答对题数为：" + number);
+		System.out.println("正确率为：" + rate + "%");
 	}
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		Exercise exe = 	new Exercise();
-		exe.setBothExercise();
-		exe.displayExercise(6);
-		exe.displayResult(6);
 
-	}
 }
+
+
